@@ -6,5 +6,10 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-minreq = { version = "=2.2.1", features = ["https"] }
+minreq = { version = "=2.2.1", optional = true }
 serde_json = "1"
+
+[features]
+default = ["rustls"]
+rustls = ["minreq/https"]
+native-tls = ["minreq/https-native"]
