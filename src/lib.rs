@@ -83,7 +83,8 @@ impl ReleaseFinderConfig {
                     client_name: self.client.clone(),
                     auth_token: self.auth_token.clone(),
                     version_tag: release["tag_name"].as_str().expect("Failed to parse version tag from GitHub release JSON!").to_string(),
-                    assets: json_response
+                    assets: json_response,
+                    data: release.clone()
                 });
             }
             
@@ -106,7 +107,8 @@ impl ReleaseFinderConfig {
                     client_name: self.client.clone(),
                     auth_token: self.auth_token.clone(),
                     version_tag: release["tag_name"].as_str().expect("Failed to parse version tag from GitHub release JSON!").to_string(),
-                    assets: json_response
+                    assets: json_response,
+                    data: release
                 });
             }
 
@@ -123,7 +125,8 @@ pub struct ReleaseManager {
     client_name: String,
     auth_token: Option<String>,
     version_tag: String,
-    assets: Vec<Value>
+    assets: Vec<Value>,
+    pub data: Value,
 }
 
 impl ReleaseManager {
