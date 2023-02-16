@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 use serde_json::Value;
 
 pub struct ReleaseFinderConfig {
@@ -83,6 +84,11 @@ impl ReleaseFinderConfig {
                     client_name: self.client.clone(),
                     auth_token: self.auth_token.clone(),
                     version_tag: release["tag_name"].as_str().expect("Failed to parse version tag from GitHub release JSON!").to_string(),
+                    published_at: release["published_at"]
+                        .as_str()
+                        .expect("Failed to retreive publish date from Github release JSON!")
+                        .parse::<DateTime<Utc>>()
+                        .expect("Failed to parse publish date string from Github release JSON!"),
                     assets: json_response,
                     data: release.clone()
                 });
@@ -107,6 +113,11 @@ impl ReleaseFinderConfig {
                     client_name: self.client.clone(),
                     auth_token: self.auth_token.clone(),
                     version_tag: release["tag_name"].as_str().expect("Failed to parse version tag from GitHub release JSON!").to_string(),
+                    published_at: release["published_at"]
+                        .as_str()
+                        .expect("Failed to retreive publish date from Github release JSON!")
+                        .parse::<DateTime<Utc>>()
+                        .expect("Failed to parse publish date string from Github release JSON!"),
                     assets: json_response,
                     data: release
                 });
@@ -125,6 +136,7 @@ pub struct ReleaseManager {
     client_name: String,
     auth_token: Option<String>,
     version_tag: String,
+    published_at: DateTime<Utc>,
     assets: Vec<Value>,
     pub data: Value,
 }
@@ -136,6 +148,10 @@ impl ReleaseManager {
 
     pub fn get_asset_names(&self) -> Vec<&str> {
         self.assets.iter().filter_map(|x| x["name"].as_str()).collect()
+    }
+
+    pub fn get_publish_date(&self) -> DateTime<Utc> {
+        self.published_at
     }
 
     pub fn get_asset_by_name<S: AsRef<str>>(&self, name: S) -> Option<Vec<u8>> {
